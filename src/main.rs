@@ -1,6 +1,7 @@
 use std::env;
 use std::fs;
 use std::process;
+use std::error::Error;
 
 fn main() {
 
@@ -15,10 +16,27 @@ fn main() {
     println!("Searching for: {}", config.query);
     println!("In file: {}", config.file_path);
 
-    let contents = fs::read_to_string(config.file_path)
-        .expect("Should have been able to read the file");
+    // not unwrapping because return type is unit
+    if let Err(e) = run(config) {
+        println!("Application error: {e}");
+        process::exit(1);
+    }
+}
 
-    println!("With text {}", contents)
+/// Prints the contents of file in the `config` if the result is success
+/// else returns an `Error` if unable to parse the file to string.
+///
+/// # Arguments
+///
+/// * `config` - A config struct that holds the parsed command line arguments
+///
+fn run(config: Config) -> Result<(), Box<dyn Error>> {
+    // ? will throw an error instead of panicking
+    let contents = fs::read_to_string(config.file_path)?;
+
+    println!("With text:\n{contents}");
+
+    Ok(())
 }
 
 /// Config passed in as command line arguments when running the program
