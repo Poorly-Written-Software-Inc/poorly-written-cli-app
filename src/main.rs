@@ -13,9 +13,6 @@ fn main() {
         process::exit(1);
     });
 
-    println!("Searching for: {}", config.query);
-    println!("In file: {}", config.file_path);
-
     // not unwrapping because return type is unit
     if let Err(e) = poorly_written_cli_app::run(config) {
         println!("Application error: {e}");
